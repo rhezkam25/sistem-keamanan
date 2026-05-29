@@ -16,13 +16,13 @@
     </head>
     <body class="font-sans text-gray-900 antialiased">
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div class="flex flex-col items-center gap-3">
+            <div class="flex flex-col items-center gap-2 px-4">
                 <a href="/">
-                    <img src="{{ asset('images/logo-kjri.png') }}" alt="KJRI Penang" class="h-24 w-24 object-contain drop-shadow-md">
+                    <img src="{{ asset('images/logo-kjri.png') }}" alt="KJRI Penang" class="h-16 w-16 sm:h-20 sm:w-20 object-contain drop-shadow-md">
                 </a>
                 <div class="text-center">
-                    <h1 class="text-xl font-bold text-gray-800">Sistem Keamanan</h1>
-                    <p class="text-sm font-semibold text-blue-600">Konsulat Jenderal Republik Indonesia Penang</p>
+                    <h1 class="text-base sm:text-lg font-bold text-gray-800">Sistem Keamanan</h1>
+                    <p class="text-xs sm:text-sm font-semibold text-blue-600">Konsulat Jenderal Republik Indonesia Penang</p>
                 </div>
             </div>
 

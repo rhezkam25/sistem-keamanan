@@ -4,9 +4,9 @@
             <div class="flex">
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
-                        <img src="{{ asset('images/logo-kjri.png') }}" alt="KJRI Penang" class="h-10 w-10 object-contain rounded-full">
-                        <div class="hidden lg:block">
-                            <p class="font-bold text-gray-800 text-sm leading-tight">Sistem Keamanan</p>
+                        <img src="{{ asset('images/logo-kjri.png') }}" alt="KJRI Penang" class="h-8 w-8 sm:h-9 sm:w-9 object-contain rounded-full shrink-0">
+                        <div class="hidden sm:block">
+                            <p class="font-bold text-gray-800 text-xs sm:text-sm leading-tight">Sistem Keamanan</p>
                             <p class="text-xs text-blue-600 font-medium leading-tight">KJRI Penang</p>
                         </div>
                     </a>
