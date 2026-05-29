@@ -1,12 +1,12 @@
 # Sistem Keamanan Kantor
 
-Aplikasi web untuk manajemen dan pengawasan kunjungan tamu di lingkungan kantor berbasis QR Code.
+Aplikasi web untuk manajemen dan pengawasan kunjungan tamu di lingkungan kantor KJRI Penang berbasis QR Code.
 
 ---
 
 ## Latar Belakang
 
-Pengelolaan tamu di lingkungan kantor sering kali masih dilakukan secara manual — menggunakan buku tamu fisik yang rawan kehilangan data, sulit dilacak, dan tidak efisien. Tidak ada mekanisme yang memastikan bahwa setiap tamu yang masuk telah mendapat izin dari pejabat yang berwenang, sehingga potensi risiko keamanan sulit dikendalikan.
+Pengelolaan tamu di lingkungan kantor KJRI Penang sering kali masih dilakukan secara manual — menggunakan buku tamu fisik yang rawan kehilangan data, sulit dilacak, dan tidak efisien. Tidak ada mekanisme yang memastikan bahwa setiap tamu yang masuk telah mendapat izin dari pejabat yang berwenang, sehingga potensi risiko keamanan sulit dikendalikan.
 
 **Sistem Keamanan Kantor** hadir sebagai solusi digital yang mengintegrasikan alur persetujuan kunjungan, pembuatan QR Code otomatis, dan pencatatan check-in/check-out secara real-time. Dengan sistem ini, setiap kunjungan tamu dapat dipantau secara transparan mulai dari pendaftaran hingga tamu meninggalkan gedung.
 
