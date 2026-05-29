@@ -1,0 +1,101 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
+
+class UserController extends Controller
+{
+    public function index()
+    {
+        $users = User::with('pejabat')->latest()->paginate(15);
+        return view('users.index', compact('users'));
+    }
+
+    public function create()
+    {
+        $pejabatList = User::where('role', 'pejabat')->get();
+        return view('users.create', compact('pejabatList'));
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'nip' => 'nullable|string|max:50|unique:users',
+            'email' => 'required|email|unique:users',
+            'phone' => 'nullable|string|max:20',
+            'jabatan' => 'nullable|string|max:100',
+            'role' => 'required|in:admin,pejabat,staff,satpam',
+            'pejabat_id' => 'nullable|exists:users,id|required_if:role,staff',
+            'password' => ['required', Rules\Password::defaults()],
+        ]);
+
+        User::create([
+            ...$validated,
+            'password' => Hash::make($validated['password']),
+            'pejabat_id' => $validated['role'] === 'staff' ? $validated['pejabat_id'] : null,
+        ]);
+
+        return redirect()->route('users.index')
+            ->with('success', 'User berhasil ditambahkan.');
+    }
+
+    public function show(User $user)
+    {
+        $user->load('pejabat', 'staf');
+        return view('users.show', compact('user'));
+    }
+
+    public function edit(User $user)
+    {
+        $pejabatList = User::where('role', 'pejabat')->get();
+        return view('users.edit', compact('user', 'pejabatList'));
+    }
+
+    public function update(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'nip' => 'nullable|string|max:50|unique:users,nip,' . $user->id,
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'phone' => 'nullable|string|max:20',
+            'jabatan' => 'nullable|string|max:100',
+            'role' => 'required|in:admin,pejabat,staff,satpam',
+            'pejabat_id' => 'nullable|exists:users,id|required_if:role,staff',
+            'password' => ['nullable', Rules\Password::defaults()],
+        ]);
+
+        $data = collect($validated)
+            ->except('password')
+            ->merge([
+                'pejabat_id' => $validated['role'] === 'staff' ? $validated['pejabat_id'] : null,
+            ])
+            ->toArray();
+
+        if (!empty($validated['password'])) {
+            $data['password'] = Hash::make($validated['password']);
+        }
+
+        $user->update($data);
+
+        return redirect()->route('users.index')
+            ->with('success', 'Data user berhasil diperbarui.');
+    }
+
+    public function destroy(User $user)
+    {
+        if ($user->id === auth()->id()) {
+            return redirect()->route('users.index')
+                ->with('error', 'Tidak dapat menghapus akun sendiri.');
+        }
+
+        $user->delete();
+
+        return redirect()->route('users.index')
+            ->with('success', 'User berhasil dihapus.');
+    }
+}
