@@ -16,10 +16,14 @@
     </head>
     <body class="font-sans text-gray-900 antialiased">
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
+            <div class="flex flex-col items-center gap-3">
                 <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+                    <img src="{{ asset('images/logo-kjri.png') }}" alt="KJRI Penang" class="h-24 w-24 object-contain drop-shadow-md">
                 </a>
+                <div class="text-center">
+                    <h1 class="text-xl font-bold text-gray-800">Sistem Keamanan</h1>
+                    <p class="text-sm font-semibold text-blue-600">Konsulat Jenderal Republik Indonesia Penang</p>
+                </div>
             </div>
 
             <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
