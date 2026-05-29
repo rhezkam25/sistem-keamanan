@@ -1,58 +1,170 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistem Keamanan Kantor
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi web untuk manajemen dan pengawasan kunjungan tamu di lingkungan kantor berbasis QR Code.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Latar Belakang
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Pengelolaan tamu di lingkungan kantor sering kali masih dilakukan secara manual — menggunakan buku tamu fisik yang rawan kehilangan data, sulit dilacak, dan tidak efisien. Tidak ada mekanisme yang memastikan bahwa setiap tamu yang masuk telah mendapat izin dari pejabat yang berwenang, sehingga potensi risiko keamanan sulit dikendalikan.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**Sistem Keamanan Kantor** hadir sebagai solusi digital yang mengintegrasikan alur persetujuan kunjungan, pembuatan QR Code otomatis, dan pencatatan check-in/check-out secara real-time. Dengan sistem ini, setiap kunjungan tamu dapat dipantau secara transparan mulai dari pendaftaran hingga tamu meninggalkan gedung.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Fitur Utama
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Manajemen Peran (Role-Based Access Control)
+Sistem memiliki 4 peran dengan hak akses yang berbeda:
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+| Peran | Input Tamu | Approve Tamu | Scan QR | Kelola Sistem |
+|---|:---:|:---:|:---:|:---:|
+| Admin | ✓ | ✓ | ✓ | ✓ |
+| Pejabat | ✓ | ✓ | — | — |
+| Staff | ✓ | — | — | — |
+| Satpam | — | — | ✓ | — |
 
-## Agentic Development
+### Pendaftaran Tamu
+- Input data tamu: Nama, Nomor KTP, No. HP, Jenis Kendaraan, Plat Kendaraan, dan Tujuan Kunjungan
+- Staff dan Pejabat dapat mendaftarkan tamu
+- Tamu yang didaftarkan oleh Staff otomatis diarahkan ke Pejabat atasan untuk mendapat persetujuan
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### Alur Persetujuan (Approval Workflow)
+- Setiap tamu yang didaftarkan berstatus **Menunggu** hingga disetujui
+- Pejabat menyetujui atau menolak kunjungan secara manual
+- Pejabat hanya dapat melihat dan menyetujui tamu dari dirinya sendiri dan seluruh Staff bawahannya
+- Penolakan wajib disertai catatan alasan
+
+### QR Code Otomatis
+- QR Code 8 karakter di-generate otomatis saat kunjungan disetujui
+- QR Code dicetak dan diberikan kepada tamu sebagai bukti izin masuk
+- Tamu dapat menunjukkan QR Code atau menyebutkan kode 8 karakter secara manual
+
+### Scan QR & Check-in / Check-out
+- Satpam dan Admin dapat melakukan scan QR menggunakan:
+  - **Kamera HP/laptop** — deteksi QR Code otomatis secara real-time
+  - **Kode manual** — ketik 8 karakter kode, auto-submit saat lengkap
+- Sistem mencatat waktu check-in dan check-out secara otomatis
+- **QR hangus permanen** setelah tamu melakukan check-out — tidak dapat digunakan kembali
+- Sistem memblokir check-out jika tamu belum melakukan check-in
+- Batas waktu kunjungan maksimal **48 jam** sejak check-in
+
+### Dashboard & Statistik
+- Statistik disesuaikan per peran (total tamu, menunggu persetujuan, sudah masuk, dll.)
+- Log kunjungan hari ini ditampilkan secara real-time di halaman scan
+
+### Laporan Kunjungan (Admin)
+- Riwayat seluruh kunjungan tamu dengan filter status dan rentang tanggal
+- Menampilkan waktu check-in dan check-out setiap tamu
+
+### Manajemen Pengguna (Admin)
+- Tambah, edit, dan hapus akun pengguna
+- Atur peran dan hubungan Pejabat–Staff (satu Pejabat dapat memiliki banyak Staff)
+
+---
+
+## Tech Stack
+
+| Komponen | Teknologi |
+|---|---|
+| Backend | Laravel 13 (PHP 8.4) |
+| Database | MySQL |
+| Frontend | Blade + Tailwind CSS + Alpine.js |
+| QR Generator | simplesoftwareio/simple-qrcode |
+| QR Scanner | html5-qrcode |
+| Auth | Laravel Breeze |
+
+---
+
+## Instalasi
+
+### Prasyarat
+- PHP >= 8.2
+- Composer
+- MySQL
+- Node.js & NPM
+
+### Langkah Instalasi
 
 ```bash
-composer require laravel/boost --dev
+# 1. Clone repository
+git clone https://github.com/rhezkam25/sistem-keamanan.git
+cd sistem-keamanan
 
-php artisan boost:install
+# 2. Install dependensi PHP
+composer install
+
+# 3. Install dependensi Node
+npm install && npm run build
+
+# 4. Salin file environment
+cp .env.example .env
+
+# 5. Generate application key
+php artisan key:generate
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### Konfigurasi Database
 
-## Contributing
+Edit file `.env` dan sesuaikan:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=sistem_keamanan
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-## Code of Conduct
+```bash
+# 6. Jalankan migrasi dan seeder
+php artisan migrate --seed
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# 7. Jalankan server
+php artisan serve
+```
 
-## Security Vulnerabilities
+Akses aplikasi di `http://localhost:8000`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## Akun Default (Seeder)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+| Email | Password | Peran |
+|---|---|---|
+| admin@kantor.com | password | Admin |
+| pejabat@kantor.com | password | Pejabat |
+| staff@kantor.com | password | Staff |
+| satpam@kantor.com | password | Satpam |
+
+---
+
+## Alur Penggunaan
+
+```
+Staff/Pejabat          Pejabat                 Satpam/Admin
+     │                    │                         │
+     │  Input data tamu   │                         │
+     │──────────────────► │                         │
+     │                    │  Setujui / Tolak         │
+     │                    │─────────────────────┐    │
+     │                    │  QR Code digenerate  │    │
+     │                    │◄────────────────────┘    │
+     │   QR diberikan ke tamu                        │
+     │                                               │
+     │              Tamu datang ke kantor             │
+     │                                               │
+     │                              Scan QR (Check-in)│
+     │                              ────────────────► │
+     │                                               │
+     │                              Scan QR (Check-out)
+     │                              ────────────────► │
+     │                              QR hangus permanen│
+```
+
+---
+
+## Lisensi
+
+Proyek ini dibuat untuk keperluan pengembangan sistem keamanan kantor.
