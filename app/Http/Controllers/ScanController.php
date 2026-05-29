@@ -40,29 +40,45 @@ class ScanController extends Controller
         $sudahMasuk = $tamu->kunjunganMasuk()->exists();
         $sudahKeluar = $tamu->kunjunganKeluar()->exists();
 
-        if ($sudahMasuk && $sudahKeluar) {
-            return back()->with('error', "Tamu {$tamu->nama} sudah melakukan kunjungan lengkap (masuk & keluar).");
+        // QR hangus: sekali check-out, QR tidak dapat digunakan lagi untuk alasan apapun
+        if ($sudahKeluar) {
+            return back()->with([
+                'qr_hangus'      => true,
+                'qr_hangus_nama' => $tamu->nama,
+                'error'          => "QR Code ini sudah tidak aktif. Kunjungan {$tamu->nama} telah selesai dan tidak dapat digunakan kembali.",
+            ]);
+        }
+
+        // Cek batas waktu 48 jam sejak check-in
+        if ($sudahMasuk && !$sudahKeluar) {
+            $kunjunganMasuk = $tamu->kunjunganMasuk;
+            if ($kunjunganMasuk && now()->diffInHours($kunjunganMasuk->waktu_scan) > 48) {
+                return back()->with('error', "Sesi kunjungan {$tamu->nama} telah kedaluwarsa (lebih dari 48 jam sejak check-in). Hubungi admin untuk penanganan lebih lanjut.");
+            }
         }
 
         $jenis = $sudahMasuk ? 'keluar' : 'masuk';
 
         Kunjungan::create([
-            'tamu_id' => $tamu->id,
+            'tamu_id'    => $tamu->id,
             'discan_oleh' => Auth::id(),
-            'jenis' => $jenis,
+            'jenis'      => $jenis,
             'waktu_scan' => now(),
         ]);
 
-        $pesan = $jenis === 'masuk'
-            ? "Tamu {$tamu->nama} berhasil CHECK-IN."
-            : "Tamu {$tamu->nama} berhasil CHECK-OUT.";
+        $isCheckOut = $jenis === 'keluar';
+
+        $pesan = $isCheckOut
+            ? "Tamu {$tamu->nama} berhasil CHECK-OUT. QR Code telah dinonaktifkan."
+            : "Tamu {$tamu->nama} berhasil CHECK-IN.";
 
         return back()->with([
-            'scan_success' => true,
-            'scan_tamu_nama' => $tamu->nama,
+            'scan_success'    => true,
+            'scan_tamu_nama'  => $tamu->nama,
             'scan_tamu_tujuan' => $tamu->tujuan_kunjungan,
-            'scan_jenis' => $jenis,
-            'success' => $pesan,
+            'scan_jenis'      => $jenis,
+            'scan_qr_hangus'  => $isCheckOut,
+            'success'         => $pesan,
         ]);
     }
 }

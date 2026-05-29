@@ -7,15 +7,46 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @include('partials.alert')
 
+            {{-- QR Hangus Notification --}}
+            @if(session('qr_hangus'))
+            <div class="mb-4 bg-orange-50 border border-orange-300 rounded-lg p-4 flex items-start gap-3">
+                <svg class="w-6 h-6 text-orange-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                </svg>
+                <div>
+                    <p class="font-semibold text-orange-800">QR Code Tidak Aktif</p>
+                    <p class="text-sm text-orange-700 mt-0.5">Kunjungan <strong>{{ session('qr_hangus_nama') }}</strong> sudah selesai. QR Code ini tidak dapat digunakan kembali.</p>
+                </div>
+            </div>
+            @endif
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                 {{-- Scan Form --}}
                 <div class="space-y-4">
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h3 class="text-base font-semibold text-gray-700 mb-4">Input QR Code</h3>
+                    <div class="bg-white rounded-lg shadow p-6" x-data="scanPage()">
+
+                        {{-- Tab Toggle --}}
+                        <div class="flex gap-2 mb-5">
+                            <button type="button"
+                                @click="switchMode('manual')"
+                                :class="mode === 'manual' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+                                class="flex-1 py-2 rounded-lg text-sm font-medium transition">
+                                ⌨ Kode Manual
+                            </button>
+                            <button type="button"
+                                @click="switchMode('kamera')"
+                                :class="mode === 'kamera' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+                                class="flex-1 py-2 rounded-lg text-sm font-medium transition">
+                                📷 Kamera
+                            </button>
+                        </div>
+
                         <form method="POST" action="{{ route('scan.proses') }}" id="scanForm">
                             @csrf
-                            <div class="mb-4">
+
+                            {{-- Mode: Manual --}}
+                            <div x-show="mode === 'manual'">
                                 <x-input-label for="qr_token" value="Kode QR atau Kode Manual" />
                                 <x-text-input
                                     id="qr_token"
@@ -25,21 +56,43 @@
                                     placeholder="Scan atau ketik kode..."
                                     autofocus
                                     autocomplete="off"
+                                    x-ref="tokenInput"
                                 />
                                 <p class="mt-1 text-xs text-gray-400">Arahkan scanner ke QR Code, atau ketik kode 8 karakter secara manual.</p>
                             </div>
-                            <x-primary-button class="w-full justify-center">Proses Check-in / Check-out</x-primary-button>
+
+                            {{-- Mode: Kamera --}}
+                            <div x-show="mode === 'kamera'">
+                                <div id="qr-reader" class="w-full rounded-lg overflow-hidden border border-gray-200 bg-gray-50" style="min-height: 250px;"></div>
+                                <p class="mt-2 text-xs text-gray-400 text-center">Arahkan kamera ke QR Code tamu. Otomatis terdeteksi.</p>
+                                <p class="mt-1 text-xs text-center font-mono tracking-widest" x-text="detectedCode ? 'Terdeteksi: ' + detectedCode : ''" :class="detectedCode ? 'text-blue-600' : 'text-gray-300'"></p>
+                                {{-- Hidden input untuk mode kamera --}}
+                                <input type="hidden" name="qr_token" id="qr_token_camera" />
+                            </div>
+
+                            <div class="mt-4" x-show="mode === 'manual'">
+                                <x-primary-button class="w-full justify-center">Proses Check-in / Check-out</x-primary-button>
+                            </div>
                         </form>
                     </div>
 
                     {{-- Scan Result --}}
                     @if(session('scan_success'))
-                    <div class="bg-green-50 border border-green-200 rounded-lg p-5 text-center">
-                        <div class="text-2xl font-bold text-green-700 mb-1">
-                            {{ session('scan_jenis') === 'masuk' ? 'CHECK IN' : 'CHECK OUT' }}
+                    <div class="rounded-lg p-5 text-center border
+                        {{ session('scan_qr_hangus') ? 'bg-blue-50 border-blue-200' : 'bg-green-50 border-green-200' }}">
+                        <div class="text-2xl font-bold mb-1
+                            {{ session('scan_qr_hangus') ? 'text-blue-700' : 'text-green-700' }}">
+                            {{ session('scan_jenis') === 'masuk' ? 'CHECK IN ✓' : 'CHECK OUT ✓' }}
                         </div>
-                        <p class="text-green-800 font-semibold">{{ session('scan_tamu_nama') }}</p>
-                        <p class="text-green-600 text-sm mt-1">{{ session('scan_tamu_tujuan') }}</p>
+                        <p class="font-semibold {{ session('scan_qr_hangus') ? 'text-blue-800' : 'text-green-800' }}">
+                            {{ session('scan_tamu_nama') }}
+                        </p>
+                        <p class="text-sm mt-1 {{ session('scan_qr_hangus') ? 'text-blue-600' : 'text-green-600' }}">
+                            {{ session('scan_tamu_tujuan') }}
+                        </p>
+                        @if(session('scan_qr_hangus'))
+                        <p class="mt-2 text-xs text-orange-600 font-medium">QR Code telah dinonaktifkan</p>
+                        @endif
                     </div>
                     @endif
                 </div>
@@ -75,8 +128,56 @@
         </div>
     </div>
 
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <script>
-    // Auto-submit saat kode QR berhasil discan (panjang 8 karakter)
+    function scanPage() {
+        return {
+            mode: 'manual',
+            detectedCode: '',
+            scanner: null,
+
+            switchMode(newMode) {
+                if (this.mode === newMode) return;
+                if (this.mode === 'kamera') this.stopCamera();
+                this.mode = newMode;
+                this.detectedCode = '';
+                if (newMode === 'kamera') {
+                    this.$nextTick(() => this.startCamera());
+                } else {
+                    this.$nextTick(() => this.$refs.tokenInput?.focus());
+                }
+            },
+
+            startCamera() {
+                this.scanner = new Html5Qrcode('qr-reader');
+                this.scanner.start(
+                    { facingMode: 'environment' },
+                    { fps: 10, qrbox: { width: 220, height: 220 } },
+                    (decodedText) => {
+                        const code = decodedText.trim().toUpperCase().substring(0, 8);
+                        if (code.length === 8 && this.detectedCode !== code) {
+                            this.detectedCode = code;
+                            document.getElementById('qr_token_camera').value = code;
+                            this.stopCamera();
+                            setTimeout(() => document.getElementById('scanForm').submit(), 300);
+                        }
+                    },
+                    () => {}
+                ).catch(err => {
+                    console.warn('Kamera tidak dapat diakses:', err);
+                });
+            },
+
+            stopCamera() {
+                if (this.scanner) {
+                    this.scanner.stop().catch(() => {});
+                    this.scanner = null;
+                }
+            },
+        };
+    }
+
+    // Auto-submit saat kode QR berhasil discan via hardware scanner (mode manual)
     document.getElementById('qr_token').addEventListener('input', function() {
         const val = this.value.trim();
         if (val.length === 8) {
