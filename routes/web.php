@@ -41,6 +41,7 @@ Route::middleware(['auth'])->group(function () {
     // Manajemen User — hanya Admin
     Route::middleware('role:admin')->group(function () {
         Route::resource('users', UserController::class);
+        Route::patch('/users/{user}/toggle-active', [UserController::class, 'toggleActive'])->name('users.toggleActive');
         Route::get('/laporan', [DashboardController::class, 'laporan'])->name('laporan.index');
     });
 });

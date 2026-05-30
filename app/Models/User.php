@@ -20,6 +20,7 @@ class User extends Authenticatable
         'phone',
         'jabatan',
         'role',
+        'is_active',
         'pejabat_id',
         'password',
     ];
@@ -34,7 +35,13 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
         ];
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
     }
 
     public function pejabat()
