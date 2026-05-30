@@ -31,6 +31,10 @@
             <main>
                 {{ $slot }}
             </main>
+
+            <footer class="py-4 text-center text-xs text-gray-400">
+                Copyright &copy; 2026 Fungsi Komunikasi KJRI Penang
+            </footer>
         </div>
     </body>
 </html>

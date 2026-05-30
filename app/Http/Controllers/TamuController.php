@@ -77,7 +77,7 @@ class TamuController extends Controller
         $pejabatList = collect();
 
         if ($user->isAdmin()) {
-            $pejabatList = User::where('role', 'pejabat')->get();
+            $pejabatList = User::active()->where('role', 'pejabat')->get();
         } elseif ($user->isPejabat()) {
             $pejabatList = collect([$user]);
         } elseif ($user->isStaff() && $user->pejabat_id) {
@@ -130,7 +130,7 @@ class TamuController extends Controller
 
         $user = Auth::user();
         $pejabatList = $user->isAdmin()
-            ? User::where('role', 'pejabat')->get()
+            ? User::active()->where('role', 'pejabat')->get()
             : collect([$tamu->pejabat]);
 
         return view('tamu.edit', compact('tamu', 'pejabatList'));

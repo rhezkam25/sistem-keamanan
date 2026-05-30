@@ -17,7 +17,7 @@ class UserController extends Controller
 
     public function create()
     {
-        $pejabatList = User::where('role', 'pejabat')->get();
+        $pejabatList = User::active()->where('role', 'pejabat')->get();
         return view('users.create', compact('pejabatList'));
     }
 
@@ -52,7 +52,7 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $pejabatList = User::where('role', 'pejabat')->get();
+        $pejabatList = User::active()->where('role', 'pejabat')->get();
         return view('users.edit', compact('user', 'pejabatList'));
     }
 
@@ -88,14 +88,18 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        abort(403, 'Penghapusan akun tidak diizinkan.');
+    }
+
+    public function toggleActive(User $user)
+    {
         if ($user->id === auth()->id()) {
-            return redirect()->route('users.index')
-                ->with('error', 'Tidak dapat menghapus akun sendiri.');
+            return back()->with('error', 'Tidak dapat menonaktifkan akun sendiri.');
         }
 
-        $user->delete();
+        $user->update(['is_active' => !$user->is_active]);
+        $status = $user->is_active ? 'diaktifkan' : 'dinonaktifkan';
 
-        return redirect()->route('users.index')
-            ->with('success', 'User berhasil dihapus.');
+        return back()->with('success', "Akun {$user->name} berhasil {$status}.");
     }
 }
