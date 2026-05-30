@@ -14,20 +14,61 @@ class TamuController extends Controller
     {
         $user = Auth::user();
 
-        $query = Tamu::with(['pendaftar', 'pejabat']);
+        $query = Tamu::with(['pendaftar', 'pejabat'])->select('tamu.*');
 
         if ($user->isStaff()) {
-            $query->where('didaftarkan_oleh', $user->id);
+            $query->where('tamu.didaftarkan_oleh', $user->id);
         } elseif ($user->isPejabat()) {
             $query->where(function ($q) use ($user) {
-                $q->where('pejabat_id', $user->id)
-                  ->orWhere('didaftarkan_oleh', $user->id);
+                $q->where('tamu.pejabat_id', $user->id)
+                  ->orWhere('tamu.didaftarkan_oleh', $user->id);
             });
         }
 
-        $tamu = $query->latest()->paginate(15);
+        if ($search = request('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('tamu.nama', 'like', "%{$search}%")
+                  ->orWhere('tamu.nomor_id', 'like', "%{$search}%");
+            });
+        }
 
-        return view('tamu.index', compact('tamu'));
+        if ($status = request('status')) {
+            $query->where('tamu.status', $status);
+        }
+
+        $dariTanggal   = request('dari_tanggal');
+        $sampaiTanggal = request('sampai_tanggal');
+
+        if ($dariTanggal && $sampaiTanggal) {
+            $dari   = \Carbon\Carbon::parse($dariTanggal)->startOfDay();
+            $sampai = \Carbon\Carbon::parse($sampaiTanggal)->endOfDay();
+
+            if ($dari->diffInDays($sampai) > 90) {
+                $sampai        = $dari->copy()->addDays(90)->endOfDay();
+                $sampaiTanggal = $sampai->format('Y-m-d');
+            }
+
+            $query->whereBetween('tamu.created_at', [$dari, $sampai]);
+        } elseif ($dariTanggal) {
+            $query->whereDate('tamu.created_at', '>=', $dariTanggal);
+        } elseif ($sampaiTanggal) {
+            $query->whereDate('tamu.created_at', '<=', $sampaiTanggal);
+        }
+
+        $sort      = in_array(request('sort'), ['nama', 'nomor_id', 'created_at', 'pejabat']) ? request('sort') : 'created_at';
+        $direction = request('direction') === 'asc' ? 'asc' : 'desc';
+        $perPage   = in_array((int) request('per_page'), [10, 20, 50]) ? (int) request('per_page') : 20;
+
+        if ($sort === 'pejabat') {
+            $query->join('users as pejabat_user', 'tamu.pejabat_id', '=', 'pejabat_user.id')
+                  ->orderBy('pejabat_user.name', $direction);
+        } else {
+            $query->orderBy("tamu.{$sort}", $direction);
+        }
+
+        $tamu = $query->paginate($perPage)->withQueryString();
+
+        return view('tamu.index', compact('tamu', 'sort', 'direction', 'perPage'));
     }
 
     public function create()
