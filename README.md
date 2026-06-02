@@ -1,4 +1,5 @@
-# Sistem Keamanan KJRI Penang
+# Sistem Keamanan KJRI Penang <img width="149" height="150" alt="logo-kjri" src="https://github.com/user-attachments/assets/9899d1e0-8685-4b86-a02e-3d839b83810b" />
+
 
 [![Version](https://img.shields.io/badge/versi-1.0.1-blue)](https://github.com/rhezkam25/sistem-keamanan/releases/tag/v1.0.1)
 [![Laravel](https://img.shields.io/badge/Laravel-13-red)](https://laravel.com)
