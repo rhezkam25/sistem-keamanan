@@ -53,6 +53,16 @@
                         Scan QR Tamu
                     </a>
                     @endif
+                    @if(Auth::user()->isSatpam())
+                    <a href="{{ route('absensi.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 text-sm font-medium">
+                        Absensi Saya
+                    </a>
+                    @endif
+                    @if(Auth::user()->canViewAbsensi())
+                    <a href="{{ route('absensi.admin.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-teal-100 text-teal-700 rounded-lg hover:bg-teal-200 text-sm font-medium">
+                        Data Absensi Security
+                    </a>
+                    @endif
                     @if(Auth::user()->canInputTamu())
                     <a href="{{ route('tamu.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 text-sm font-medium">
                         Lihat Semua Tamu
@@ -60,6 +70,40 @@
                     @endif
                 </div>
             </div>
+
+            {{-- Status Absensi Hari Ini (khusus satpam) --}}
+            @if(Auth::user()->isSatpam())
+            <div class="bg-white rounded-lg shadow p-5">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-base font-semibold text-gray-700 mb-1">Absensi Hari Ini</h3>
+                        <p class="text-sm text-gray-500">{{ now()->translatedFormat('l, d F Y') }}</p>
+                    </div>
+                    <a href="{{ route('absensi.index') }}" class="text-sm text-teal-600 hover:underline">Buka Absensi →</a>
+                </div>
+                @php $absensiHariIni = auth()->user()->absensiHariIni()->first(); @endphp
+                <div class="mt-4 flex items-center gap-3">
+                    @if(!$absensiHariIni)
+                        <span class="w-3 h-3 rounded-full bg-gray-400 shrink-0"></span>
+                        <span class="text-gray-600">Belum absen masuk</span>
+                    @elseif($absensiHariIni->waktu_keluar)
+                        <span class="w-3 h-3 rounded-full bg-green-500 shrink-0"></span>
+                        <span class="text-green-700 font-medium">Selesai Bertugas</span>
+                        <span class="text-sm text-gray-500 ml-2">
+                            {{ $absensiHariIni->waktu_masuk->format('H:i') }} –
+                            {{ $absensiHariIni->waktu_keluar->format('H:i') }}
+                            ({{ $absensiHariIni->durasiFormatted() }})
+                        </span>
+                    @else
+                        <span class="w-3 h-3 rounded-full bg-blue-500 animate-pulse shrink-0"></span>
+                        <span class="text-blue-700 font-medium">Sedang Bertugas</span>
+                        <span class="text-sm text-gray-500 ml-2">
+                            Masuk: {{ $absensiHariIni->waktu_masuk->format('H:i') }}
+                        </span>
+                    @endif
+                </div>
+            </div>
+            @endif
 
             {{-- Kunjungan Terbaru --}}
             <div class="bg-white rounded-lg shadow">

@@ -29,6 +29,10 @@
             <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
                 {{ $slot }}
             </div>
+
+            <footer class="mt-6 pb-4 text-center text-xs text-gray-400">
+                Copyright &copy; 2026 Fungsi Komunikasi KJRI Penang
+            </footer>
         </div>
     </body>
 </html>

@@ -39,12 +39,27 @@
                     </x-nav-link>
                     @endif
 
+                    @if(Auth::user()->isSatpam())
+                    <x-nav-link :href="route('absensi.index')" :active="request()->routeIs('absensi.index') || request()->routeIs('absensi.riwayat')">
+                        Absensi
+                    </x-nav-link>
+                    @endif
+
+                    @if(Auth::user()->canViewAbsensi())
+                    <x-nav-link :href="route('absensi.admin.index')" :active="request()->routeIs('absensi.admin.*')">
+                        Data Absensi
+                    </x-nav-link>
+                    @endif
+
                     @if(Auth::user()->isAdmin())
                     <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
                         Manajemen User
                     </x-nav-link>
                     <x-nav-link :href="route('laporan.index')" :active="request()->routeIs('laporan.*')">
                         Laporan
+                    </x-nav-link>
+                    <x-nav-link :href="route('pengaturan.index')" :active="request()->routeIs('pengaturan.*')">
+                        Pengaturan
                     </x-nav-link>
                     @endif
                 </div>
@@ -106,9 +121,17 @@
             @if(Auth::user()->canScanQr())
             <x-responsive-nav-link :href="route('scan.index')" :active="request()->routeIs('scan.*')">Scan QR</x-responsive-nav-link>
             @endif
+            @if(Auth::user()->isSatpam())
+            <x-responsive-nav-link :href="route('absensi.index')" :active="request()->routeIs('absensi.index')">Absensi</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('absensi.riwayat')" :active="request()->routeIs('absensi.riwayat')">Riwayat Absensi</x-responsive-nav-link>
+            @endif
+            @if(Auth::user()->canViewAbsensi())
+            <x-responsive-nav-link :href="route('absensi.admin.index')" :active="request()->routeIs('absensi.admin.*')">Data Absensi</x-responsive-nav-link>
+            @endif
             @if(Auth::user()->isAdmin())
             <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">Manajemen User</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('laporan.index')" :active="request()->routeIs('laporan.*')">Laporan</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('pengaturan.index')" :active="request()->routeIs('pengaturan.*')">Pengaturan</x-responsive-nav-link>
             @endif
         </div>
         <div class="pt-4 pb-1 border-t border-gray-200">
