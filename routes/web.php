@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\AbsensiAdminController;
+use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PengaturanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScanController;
 use App\Http\Controllers\TamuController;
@@ -38,11 +41,29 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/scan', [ScanController::class, 'proses'])->name('scan.proses');
     });
 
+    // Absensi — Satpam & Admin
+    Route::middleware('role:admin,satpam')->group(function () {
+        Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
+        Route::post('/absensi/masuk', [AbsensiController::class, 'masuk'])->name('absensi.masuk');
+        Route::post('/absensi/keluar', [AbsensiController::class, 'keluar'])->name('absensi.keluar');
+        Route::get('/absensi/riwayat', [AbsensiController::class, 'riwayat'])->name('absensi.riwayat');
+    });
+
+    // Data Absensi — Admin & Pejabat (cek can_view_absensi di controller)
+    Route::middleware('role:admin,pejabat')->group(function () {
+        Route::get('/absensi/data', [AbsensiAdminController::class, 'index'])->name('absensi.admin.index');
+        Route::get('/absensi/data/export', [AbsensiAdminController::class, 'export'])->name('absensi.admin.export');
+        Route::get('/absensi/data/{user}', [AbsensiAdminController::class, 'show'])->name('absensi.admin.show');
+    });
+
     // Manajemen User — hanya Admin
     Route::middleware('role:admin')->group(function () {
         Route::resource('users', UserController::class);
         Route::patch('/users/{user}/toggle-active', [UserController::class, 'toggleActive'])->name('users.toggleActive');
+        Route::patch('/users/{user}/toggle-absensi-access', [UserController::class, 'toggleAbsensiAccess'])->name('users.toggleAbsensiAccess');
         Route::get('/laporan', [DashboardController::class, 'laporan'])->name('laporan.index');
+        Route::get('/pengaturan', [PengaturanController::class, 'index'])->name('pengaturan.index');
+        Route::patch('/pengaturan', [PengaturanController::class, 'update'])->name('pengaturan.update');
     });
 });
 

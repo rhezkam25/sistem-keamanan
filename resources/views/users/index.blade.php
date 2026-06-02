@@ -21,6 +21,7 @@
                                 <th class="px-4 py-3 text-left text-gray-600 font-medium">Role</th>
                                 <th class="px-4 py-3 text-left text-gray-600 font-medium">Pejabat</th>
                                 <th class="px-4 py-3 text-left text-gray-600 font-medium">Status</th>
+                                <th class="px-4 py-3 text-left text-gray-600 font-medium">Akses Absensi</th>
                                 <th class="px-4 py-3 text-left text-gray-600 font-medium">Aksi</th>
                             </tr>
                         </thead>
@@ -46,6 +47,20 @@
                                         <span class="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">Aktif</span>
                                     @else
                                         <span class="px-2 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">Nonaktif</span>
+                                    @endif
+                                </td>
+                                <td class="px-4 py-3">
+                                    @if($u->isPejabat())
+                                        <form method="POST" action="{{ route('users.toggleAbsensiAccess', $u) }}" class="inline">
+                                            @csrf @method('PATCH')
+                                            <button type="submit"
+                                                class="px-2 py-0.5 rounded-full text-xs font-semibold transition
+                                                    {{ $u->can_view_absensi ? 'bg-teal-100 text-teal-700 hover:bg-teal-200' : 'bg-gray-100 text-gray-500 hover:bg-gray-200' }}">
+                                                {{ $u->can_view_absensi ? 'Ada Akses ✓' : 'Tidak Ada Akses' }}
+                                            </button>
+                                        </form>
+                                    @else
+                                        <span class="text-xs text-gray-400">-</span>
                                     @endif
                                 </td>
                                 <td class="px-4 py-3">

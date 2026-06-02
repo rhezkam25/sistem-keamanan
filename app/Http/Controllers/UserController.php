@@ -102,4 +102,14 @@ class UserController extends Controller
 
         return back()->with('success', "Akun {$user->name} berhasil {$status}.");
     }
+
+    public function toggleAbsensiAccess(User $user)
+    {
+        abort_if(!$user->isPejabat(), 403, 'Akses absensi hanya dapat diberikan ke pejabat.');
+
+        $user->update(['can_view_absensi' => !$user->can_view_absensi]);
+        $status = $user->can_view_absensi ? 'diberikan' : 'dicabut';
+
+        return back()->with('success', "Akses data absensi untuk {$user->name} berhasil {$status}.");
+    }
 }

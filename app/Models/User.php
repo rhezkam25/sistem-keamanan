@@ -21,6 +21,7 @@ class User extends Authenticatable
         'jabatan',
         'role',
         'is_active',
+        'can_view_absensi',
         'pejabat_id',
         'password',
     ];
@@ -33,9 +34,10 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'is_active' => 'boolean',
+            'email_verified_at'  => 'datetime',
+            'password'           => 'hashed',
+            'is_active'          => 'boolean',
+            'can_view_absensi'   => 'boolean',
         ];
     }
 
@@ -97,5 +99,20 @@ class User extends Authenticatable
     public function canInputTamu(): bool
     {
         return in_array($this->role, ['admin', 'pejabat', 'staff']);
+    }
+
+    public function canViewAbsensi(): bool
+    {
+        return $this->isAdmin() || ($this->isPejabat() && $this->can_view_absensi);
+    }
+
+    public function absensi()
+    {
+        return $this->hasMany(Absensi::class);
+    }
+
+    public function absensiHariIni()
+    {
+        return $this->hasOne(Absensi::class)->whereDate('tanggal', today());
     }
 }

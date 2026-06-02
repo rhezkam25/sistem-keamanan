@@ -1,65 +1,84 @@
-# Sistem Keamanan Kantor
+# Sistem Keamanan KJRI Penang
 
-Aplikasi web untuk manajemen dan pengawasan kunjungan tamu di lingkungan kantor KJRI Penang berbasis QR Code.
+[![Version](https://img.shields.io/badge/versi-1.0.1-blue)](https://github.com/rhezkam25/sistem-keamanan/releases/tag/v1.0.1)
+[![Laravel](https://img.shields.io/badge/Laravel-13-red)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.3+-purple)](https://php.net)
+[![License](https://img.shields.io/badge/lisensi-MIT-green)](LICENSE)
+
+Aplikasi web manajemen keamanan kantor KJRI Penang — mencakup pengelolaan kunjungan tamu berbasis QR Code dan sistem absensi satpam berbasis GPS dengan geofencing interaktif.
 
 ---
 
 ## Latar Belakang
 
-Pengelolaan tamu di lingkungan kantor KJRI Penang sering kali masih dilakukan secara manual — menggunakan buku tamu fisik yang rawan kehilangan data, sulit dilacak, dan tidak efisien. Tidak ada mekanisme yang memastikan bahwa setiap tamu yang masuk telah mendapat izin dari pejabat yang berwenang, sehingga potensi risiko keamanan sulit dikendalikan.
+Pengelolaan tamu dan pencatatan kehadiran satpam di kantor KJRI Penang sebelumnya dilakukan secara manual menggunakan buku fisik — rawan kehilangan data, tidak efisien, dan sulit dilacak. Sistem ini hadir sebagai solusi digital yang mengintegrasikan:
 
-**Sistem Keamanan Kantor** hadir sebagai solusi digital yang mengintegrasikan alur persetujuan kunjungan, pembuatan QR Code otomatis, dan pencatatan check-in/check-out secara real-time. Dengan sistem ini, setiap kunjungan tamu dapat dipantau secara transparan mulai dari pendaftaran hingga tamu meninggalkan gedung.
+- Alur persetujuan kunjungan tamu dengan QR Code otomatis
+- Pencatatan check-in/check-out tamu secara real-time
+- Absensi satpam berbasis GPS dengan validasi geofencing
+- Laporan dan ekspor data untuk keperluan administrasi
 
 ---
 
 ## Fitur Utama
 
 ### Manajemen Peran (Role-Based Access Control)
-Sistem memiliki 4 peran dengan hak akses yang berbeda:
 
-| Peran | Input Tamu | Approve Tamu | Scan QR | Kelola Sistem |
+| Fitur | Admin | Pejabat | Staff | Satpam |
 |---|:---:|:---:|:---:|:---:|
-| Admin | ✓ | ✓ | ✓ | ✓ |
-| Pejabat | ✓ | ✓ | — | — |
-| Staff | ✓ | — | — | — |
-| Satpam | — | — | ✓ | — |
+| Input data tamu | ✓ | ✓ | ✓ | — |
+| Approve/tolak tamu | ✓ | ✓ | — | — |
+| Scan QR tamu | ✓ | — | — | ✓ |
+| Absensi satpam | — | — | — | ✓ |
+| Lihat data absensi | ✓ | ✓* | — | — |
+| Kelola pengguna | ✓ | — | — | — |
+| Pengaturan sistem | ✓ | — | — | — |
 
-### Pendaftaran Tamu
-- Input data tamu: Nama, Nomor KTP, No. HP, Jenis Kendaraan, Plat Kendaraan, dan Tujuan Kunjungan
-- Staff dan Pejabat dapat mendaftarkan tamu
-- Tamu yang didaftarkan oleh Staff otomatis diarahkan ke Pejabat atasan untuk mendapat persetujuan
+*Pejabat hanya bisa melihat data absensi jika diizinkan oleh Admin (toggle per akun).
 
-### Alur Persetujuan (Approval Workflow)
-- Setiap tamu yang didaftarkan berstatus **Menunggu** hingga disetujui
-- Pejabat menyetujui atau menolak kunjungan secara manual
-- Pejabat hanya dapat melihat dan menyetujui tamu dari dirinya sendiri dan seluruh Staff bawahannya
-- Penolakan wajib disertai catatan alasan
+---
 
-### QR Code Otomatis
-- QR Code 8 karakter di-generate otomatis saat kunjungan disetujui
-- QR Code dicetak dan diberikan kepada tamu sebagai bukti izin masuk
-- Tamu dapat menunjukkan QR Code atau menyebutkan kode 8 karakter secara manual
+### Manajemen Tamu
 
-### Scan QR & Check-in / Check-out
-- Satpam dan Admin dapat melakukan scan QR menggunakan:
-  - **Kamera HP/laptop** — deteksi QR Code otomatis secara real-time
-  - **Kode manual** — ketik 8 karakter kode, auto-submit saat lengkap
-- Sistem mencatat waktu check-in dan check-out secara otomatis
-- **QR hangus permanen** setelah tamu melakukan check-out — tidak dapat digunakan kembali
-- Sistem memblokir check-out jika tamu belum melakukan check-in
-- Batas waktu kunjungan maksimal **48 jam** sejak check-in
+- Registrasi tamu: Nama, No. KTP, No. HP, kendaraan, tujuan kunjungan
+- Workflow approval: tamu yang diregistrasi Staff → menunggu persetujuan Pejabat
+- Generate QR Code 8 karakter otomatis setelah disetujui
+- Scan masuk & keluar menggunakan kamera HTML5 atau kode manual
+- QR hangus permanen setelah check-out — tidak dapat digunakan ulang
+- Batas kunjungan maksimal 48 jam sejak check-in
+- Data tamu: pencarian, sorting kolom, filter rentang tanggal, pagination
 
-### Dashboard & Statistik
-- Statistik disesuaikan per peran (total tamu, menunggu persetujuan, sudah masuk, dll.)
-- Log kunjungan hari ini ditampilkan secara real-time di halaman scan
+---
 
-### Laporan Kunjungan (Admin)
-- Riwayat seluruh kunjungan tamu dengan filter status dan rentang tanggal
-- Menampilkan waktu check-in dan check-out setiap tamu
+### Absensi Satpam
 
-### Manajemen Pengguna (Admin)
-- Tambah, edit, dan hapus akun pengguna
-- Atur peran dan hubungan Pejabat–Staff (satu Pejabat dapat memiliki banyak Staff)
+- **GPS Real-time** — posisi diambil dengan `enableHighAccuracy` dan diperbarui tiap 20 detik
+- **Geofencing Leaflet.js** — peta interaktif menampilkan posisi satpam, titik kantor, dan radius
+- **Validasi server-side** — perhitungan Haversine di PHP; klien tidak dapat memanipulasi jarak
+- **Foto selfie** — kamera depan diaktifkan saat absen masuk dan keluar sebagai bukti visual
+- **Minimum jam kerja** — absen keluar hanya bisa dilakukan setelah memenuhi durasi kerja minimum (default 12 jam, dapat diubah admin)
+- **Countdown timer** — sisa waktu menuju jam kerja minimum ditampilkan real-time
+- **Deteksi fake GPS** — pemeriksaan kecepatan teleportasi (>300 m/s antar sample)
+- **Riwayat absensi** — filter per bulan/tahun, data milik satpam sendiri
+- **Laporan admin** — semua data absensi satpam dengan filter nama dan rentang tanggal
+- **Export XLS & CSV** — unduh laporan menggunakan `maatwebsite/excel`
+
+---
+
+### Dashboard & Laporan
+
+- Statistik real-time: tamu masuk hari ini, menunggu persetujuan, ditolak
+- Card absensi hari ini untuk Satpam (Belum Absen / Sedang Bertugas / Selesai)
+- Laporan kunjungan tamu dengan filter status dan tanggal (Admin)
+- Rekap absensi bulanan per satpam: total hadir, rata-rata durasi kerja
+
+---
+
+### Pengaturan Sistem (Admin)
+
+- Titik kantor: klik atau drag marker di peta Leaflet → koordinat tersimpan otomatis
+- Radius geofencing: slider 50–2000 meter, lingkaran peta update real-time
+- Minimum jam kerja: 1–24 jam (default 12 jam)
 
 ---
 
@@ -67,24 +86,29 @@ Sistem memiliki 4 peran dengan hak akses yang berbeda:
 
 | Komponen | Teknologi |
 |---|---|
-| Backend | Laravel 13 (PHP 8.4) |
-| Database | MySQL |
-| Frontend | Blade + Tailwind CSS + Alpine.js |
-| QR Generator | simplesoftwareio/simple-qrcode |
-| QR Scanner | html5-qrcode |
+| Backend | Laravel 13 / PHP 8.3+ |
+| Database | MySQL 8.0+ / MariaDB 10.6+ |
+| Frontend | Blade + Tailwind CSS 3 + Alpine.js 3 |
+| Peta & Geofencing | Leaflet.js (CDN) |
+| QR Generator | simplesoftwareio/simple-qrcode 4 |
+| QR Scanner | html5-qrcode (CDN) |
+| Export Excel | maatwebsite/excel 3.1 |
+| Role Management | Spatie Laravel Permission 7 |
 | Auth | Laravel Breeze |
+| Build Tool | Vite 8 |
+
+---
+
+## Persyaratan Sistem
+
+- **PHP** >= 8.3 dengan extension: BCMath, Ctype, JSON, Mbstring, OpenSSL, PDO, Tokenizer, XML, GD (untuk QR)
+- **MySQL** 8.0+ atau MariaDB 10.6+
+- **Composer** 2.x
+- **Node.js** 18+ dan NPM
 
 ---
 
 ## Instalasi
-
-### Prasyarat
-- PHP >= 8.2
-- Composer
-- MySQL
-- Node.js & NPM
-
-### Langkah Instalasi
 
 ```bash
 # 1. Clone repository
@@ -94,19 +118,15 @@ cd sistem-keamanan
 # 2. Install dependensi PHP
 composer install
 
-# 3. Install dependensi Node
+# 3. Install dependensi Node dan build aset
 npm install && npm run build
 
-# 4. Salin file environment
+# 4. Salin dan konfigurasi environment
 cp .env.example .env
-
-# 5. Generate application key
 php artisan key:generate
 ```
 
-### Konfigurasi Database
-
-Edit file `.env` dan sesuaikan:
+Edit `.env` sesuaikan koneksi database:
 
 ```env
 DB_CONNECTION=mysql
@@ -118,8 +138,11 @@ DB_PASSWORD=
 ```
 
 ```bash
-# 6. Jalankan migrasi dan seeder
+# 5. Jalankan migrasi dan seeder
 php artisan migrate --seed
+
+# 6. Buat symbolic link storage
+php artisan storage:link
 
 # 7. Jalankan server
 php artisan serve
@@ -129,42 +152,73 @@ Akses aplikasi di `http://localhost:8000`
 
 ---
 
-## Akun Default (Seeder)
+## Akun Default
 
-| Email | Password | Peran |
+| Peran | Email | Password |
 |---|---|---|
-| admin@kantor.com | password | Admin |
-| pejabat@kantor.com | password | Pejabat |
-| staff@kantor.com | password | Staff |
-| satpam@kantor.com | password | Satpam |
+| Admin | admin@kantor.com | password |
+| Pejabat | pejabat@kantor.com | password |
+| Staff | staff@kantor.com | password |
+| Satpam | satpam@kantor.com | password |
+
+> **Catatan:** Segera ubah password setelah instalasi di lingkungan produksi.
 
 ---
 
-## Alur Penggunaan
+## Alur Kerja
+
+### Kunjungan Tamu
 
 ```
-Staff/Pejabat          Pejabat                 Satpam/Admin
-     │                    │                         │
-     │  Input data tamu   │                         │
-     │──────────────────► │                         │
-     │                    │  Setujui / Tolak         │
-     │                    │─────────────────────┐    │
-     │                    │  QR Code digenerate  │    │
-     │                    │◄────────────────────┘    │
-     │   QR diberikan ke tamu                        │
-     │                                               │
-     │              Tamu datang ke kantor             │
-     │                                               │
-     │                              Scan QR (Check-in)│
-     │                              ────────────────► │
-     │                                               │
-     │                              Scan QR (Check-out)
-     │                              ────────────────► │
-     │                              QR hangus permanen│
+Staff / Pejabat          Pejabat                    Satpam / Admin
+       │                    │                              │
+       │  Input data tamu   │                              │
+       │──────────────────► │                              │
+       │                    │  Setujui → QR digenerate     │
+       │                    │  Tolak   → notifikasi        │
+       │                    │                              │
+       │         [QR Code diberikan kepada tamu]           │
+       │                                                   │
+       │                              Tamu tiba di kantor  │
+       │                              Scan QR (Check-in) ──►
+       │                                                   │
+       │                              Tamu hendak pulang   │
+       │                              Scan QR (Check-out) ─►
+       │                              [QR hangus permanen] │
 ```
+
+### Absensi Satpam
+
+```
+Satpam
+  │
+  ├─ Login → Buka /absensi
+  ├─ GPS aktif, peta Leaflet menampilkan posisi & radius kantor
+  ├─ Verifikasi dalam radius → foto selfie → Absen Masuk
+  │
+  ├─ [12 jam tugas — countdown real-time]
+  │
+  ├─ GPS verifikasi ulang → foto selfie → Absen Keluar
+  └─ Durasi kerja tercatat otomatis
+```
+
+---
+
+## Konfigurasi Pengaturan (Admin)
+
+1. Login sebagai Admin → buka menu **Pengaturan**
+2. Klik titik kantor di peta Leaflet (atau drag marker yang ada)
+3. Atur radius geofencing menggunakan slider — lingkaran di peta berubah real-time
+4. Atur minimum jam kerja sesuai jadwal shift
+5. Klik **Simpan Pengaturan**
+
+> Sebelum Satpam dapat melakukan absensi, Admin **wajib** mengatur titik kantor di Pengaturan.
 
 ---
 
 ## Lisensi
 
-Proyek ini dibuat untuk keperluan pengembangan sistem keamanan kantor.
+Proyek ini dikembangkan untuk keperluan sistem keamanan kantor KJRI Penang.  
+Dilisensikan di bawah [MIT License](LICENSE).
+
+© 2026 KJRI Penang
