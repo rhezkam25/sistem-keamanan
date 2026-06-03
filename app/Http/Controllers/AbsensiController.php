@@ -174,12 +174,29 @@ class AbsensiController extends Controller
 
     private function simpanFotoBase64(string $base64, string $folder): ?string
     {
-        if (!preg_match('/^data:image\/(\w+);base64,/', $base64, $matches)) {
+        $allowed = ['jpeg', 'jpg', 'png', 'gif', 'webp'];
+
+        if (!preg_match('/^data:image\/([a-zA-Z]+);base64,/', $base64, $matches)) {
             return null;
         }
-        $ext      = $matches[1];
-        $data     = base64_decode(substr($base64, strpos($base64, ',') + 1));
-        $filename = $folder . '/' . now()->format('Ymd_His') . '_' . uniqid() . '.' . $ext;
+
+        $ext = strtolower($matches[1]);
+        if (!in_array($ext, $allowed, true)) {
+            return null;
+        }
+
+        $data = base64_decode(substr($base64, strpos($base64, ',') + 1), strict: true);
+        if ($data === false || strlen($data) > 2 * 1024 * 1024) {
+            return null;
+        }
+
+        // Validate actual image content via magic bytes
+        if (@getimagesizefromstring($data) === false) {
+            return null;
+        }
+
+        $safeExt  = $ext === 'jpeg' ? 'jpg' : $ext;
+        $filename = $folder . '/' . now()->format('Ymd_His') . '_' . uniqid() . '.' . $safeExt;
         Storage::disk('public')->put($filename, $data);
         return $filename;
     }
