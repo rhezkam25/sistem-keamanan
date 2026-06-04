@@ -132,7 +132,7 @@ class AbsensiController extends Controller
             $fotoPath = $this->simpanFotoBase64($request->foto, 'absensi/' . $user->id);
         }
 
-        $durasiMenit = now()->diffInMinutes($absensi->waktu_masuk);
+        $durasiMenit = (int) $absensi->waktu_masuk->diffInMinutes(now());
 
         $absensi->update([
             'waktu_keluar'     => now(),

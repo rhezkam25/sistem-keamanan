@@ -61,10 +61,10 @@ class Absensi extends Model
 
     public function durasiFormatted(): string
     {
-        if ($this->durasi_menit === null) {
+        if ($this->durasi_menit === null || $this->durasi_menit < 0) {
             return '-';
         }
-        $jam  = intdiv($this->durasi_menit, 60);
+        $jam   = intdiv($this->durasi_menit, 60);
         $menit = $this->durasi_menit % 60;
         return "{$jam} jam {$menit} menit";
     }
@@ -74,7 +74,7 @@ class Absensi extends Model
         if (!$this->waktu_masuk) {
             return false;
         }
-        return now()->diffInMinutes($this->waktu_masuk) >= ($minimumJam * 60);
+        return $this->waktu_masuk->diffInMinutes(now()) >= ($minimumJam * 60);
     }
 
     public function sisaMenitKerja(int $minimumJam = 12): int
@@ -82,7 +82,7 @@ class Absensi extends Model
         if (!$this->waktu_masuk) {
             return $minimumJam * 60;
         }
-        $sudahMenit = now()->diffInMinutes($this->waktu_masuk);
-        return max(0, ($minimumJam * 60) - $sudahMenit);
+        $sudahMenit = $this->waktu_masuk->diffInMinutes(now());
+        return max(0, ($minimumJam * 60) - (int) $sudahMenit);
     }
 }
