@@ -9,6 +9,11 @@
     "require": {
         "php": "^8.4",
         "ext-gd": "*",
+        "ext-zip": "*",
+        "ext-mbstring": "*",
+        "ext-xml": "*",
+        "ext-dom": "*",
+        "ext-fileinfo": "*",
         "laravel/breeze": "^2.4",
         "laravel/framework": "^13.8",
         "laravel/tinker": "^3.0",
