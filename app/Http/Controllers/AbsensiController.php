@@ -214,7 +214,7 @@ class AbsensiController extends Controller
 
         $safeExt  = $ext === 'jpeg' ? 'jpg' : $ext;
         $filename = $folder . '/' . now()->format('Ymd_His') . '_' . uniqid() . '.' . $safeExt;
-        Storage::put($filename, $data, 'public');
+        Storage::put($filename, $data);
         return $filename;
     }
 }
