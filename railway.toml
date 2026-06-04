@@ -1,2 +1,2 @@
 [deploy]
-releaseCommand = "php artisan migrate --force"
+releaseCommand = "php artisan migrate --force && php artisan view:clear && php artisan config:clear && php artisan cache:clear"
