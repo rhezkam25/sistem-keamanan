@@ -187,7 +187,7 @@
                                 <td class="px-4 py-3 font-medium text-gray-800">{{ $t->nama }}</td>
                                 <td class="px-4 py-3 text-gray-500">{{ $t->nomor_id }}</td>
                                 <td class="px-4 py-3 text-gray-500">{{ Str::limit($t->tujuan_kunjungan, 35) }}</td>
-                                <td class="px-4 py-3 text-gray-500">{{ $t->pejabat->name }}</td>
+                                <td class="px-4 py-3 text-gray-500">{{ $t->pejabat?->name ?? 'N/A' }}</td>
                                 <td class="px-4 py-3">
                                     @if($t->status === 'menunggu')
                                         <span class="px-2 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">Menunggu</span>

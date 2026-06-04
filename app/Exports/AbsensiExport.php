@@ -51,9 +51,9 @@ class AbsensiExport implements FromQuery, WithHeadings, WithMapping, WithStyles,
     public function map($row): array
     {
         return [
-            $row->user->name ?? '-',
-            $row->user->nip  ?? '-',
-            $row->tanggal->format('d/m/Y'),
+            $row->user?->name ?? '-',
+            $row->user?->nip  ?? '-',
+            $row->tanggal?->format('d/m/Y') ?? '-',
             $row->waktu_masuk  ? $row->waktu_masuk->format('H:i:s')  : '-',
             $row->waktu_keluar ? $row->waktu_keluar->format('H:i:s') : '-',
             $row->durasiFormatted(),

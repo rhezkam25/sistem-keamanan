@@ -45,14 +45,15 @@ class AbsensiAdminController extends Controller
         $this->checkAccess();
         abort_if($user->role !== 'satpam', 404);
 
-        $bulan = request()->integer('bulan', now()->month);
-        $tahun = request()->integer('tahun', now()->year);
+        $bulan = max(1, min(12, request()->integer('bulan', now()->month)));
+        $tahun = max(2000, min(now()->year + 1, request()->integer('tahun', now()->year)));
 
         $absensi = Absensi::where('user_id', $user->id)
             ->whereYear('tanggal', $tahun)
             ->whereMonth('tanggal', $bulan)
             ->orderByDesc('tanggal')
-            ->paginate(31);
+            ->paginate(31)
+            ->withQueryString();
 
         $totalHadir = Absensi::where('user_id', $user->id)
             ->whereYear('tanggal', $tahun)

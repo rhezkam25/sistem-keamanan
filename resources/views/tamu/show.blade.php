@@ -46,9 +46,9 @@
                     <div><dt class="text-gray-500">No. HP</dt><dd class="font-medium mt-1">{{ $tamu->no_hp }}</dd></div>
                     <div><dt class="text-gray-500">Jenis Kendaraan</dt><dd class="font-medium mt-1">{{ $tamu->jenis_kendaraan ?? '-' }}</dd></div>
                     <div><dt class="text-gray-500">Plat Kendaraan</dt><dd class="font-medium mt-1">{{ $tamu->plat_kendaraan ?? '-' }}</dd></div>
-                    <div><dt class="text-gray-500">Pejabat yang Dituju</dt><dd class="font-medium mt-1">{{ $tamu->pejabat->name }}</dd></div>
+                    <div><dt class="text-gray-500">Pejabat yang Dituju</dt><dd class="font-medium mt-1">{{ $tamu->pejabat?->name ?? 'N/A' }}</dd></div>
                     <div class="md:col-span-2"><dt class="text-gray-500">Tujuan Kunjungan</dt><dd class="font-medium mt-1">{{ $tamu->tujuan_kunjungan }}</dd></div>
-                    <div><dt class="text-gray-500">Didaftarkan Oleh</dt><dd class="font-medium mt-1">{{ $tamu->pendaftar->name }}</dd></div>
+                    <div><dt class="text-gray-500">Didaftarkan Oleh</dt><dd class="font-medium mt-1">{{ $tamu->pendaftar?->name ?? 'N/A' }}</dd></div>
                     <div><dt class="text-gray-500">Tanggal Daftar</dt><dd class="font-medium mt-1">{{ $tamu->created_at->format('d/m/Y H:i') }}</dd></div>
                 </dl>
             </div>
@@ -64,7 +64,7 @@
                             {{ $k->jenis === 'masuk' ? 'CHECK IN' : 'CHECK OUT' }}
                         </span>
                         <span class="text-sm text-gray-600">{{ $k->waktu_scan->format('d/m/Y H:i:s') }}</span>
-                        <span class="text-sm text-gray-400">— {{ $k->petugas->name }}</span>
+                        <span class="text-sm text-gray-400">— {{ $k->petugas?->name ?? 'N/A' }}</span>
                     </div>
                     @endforeach
                 </div>

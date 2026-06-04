@@ -26,7 +26,7 @@
                                 <div><dt class="text-gray-400">No. HP</dt><dd class="font-medium">{{ $t->no_hp }}</dd></div>
                                 <div><dt class="text-gray-400">Kendaraan</dt><dd class="font-medium">{{ $t->jenis_kendaraan ? $t->jenis_kendaraan . ' — ' . $t->plat_kendaraan : '-' }}</dd></div>
                                 <div class="col-span-2 md:col-span-3"><dt class="text-gray-400">Tujuan</dt><dd class="font-medium">{{ $t->tujuan_kunjungan }}</dd></div>
-                                <div><dt class="text-gray-400">Didaftarkan oleh</dt><dd class="font-medium">{{ $t->pendaftar->name }}</dd></div>
+                                <div><dt class="text-gray-400">Didaftarkan oleh</dt><dd class="font-medium">{{ $t->pendaftar?->name ?? 'N/A' }}</dd></div>
                                 <div><dt class="text-gray-400">Tanggal</dt><dd class="font-medium">{{ $t->created_at->format('d/m/Y H:i') }}</dd></div>
                             </dl>
                         </div>

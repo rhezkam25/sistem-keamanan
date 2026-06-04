@@ -38,7 +38,7 @@
                     @if($tamu->plat_kendaraan)
                     <div class="flex justify-between"><dt class="text-gray-500">Kendaraan</dt><dd class="font-medium">{{ $tamu->jenis_kendaraan }} — {{ $tamu->plat_kendaraan }}</dd></div>
                     @endif
-                    <div class="flex justify-between"><dt class="text-gray-500">Disetujui oleh</dt><dd class="font-medium">{{ $tamu->pejabat->name }}</dd></div>
+                    <div class="flex justify-between"><dt class="text-gray-500">Disetujui oleh</dt><dd class="font-medium">{{ $tamu->pejabat?->name ?? 'N/A' }}</dd></div>
                     <div class="flex justify-between"><dt class="text-gray-500">Tanggal Disetujui</dt><dd class="font-medium">{{ $tamu->disetujui_pada?->format('d/m/Y H:i') }}</dd></div>
                 </dl>
             </div>

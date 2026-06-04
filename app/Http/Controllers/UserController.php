@@ -30,7 +30,7 @@ class UserController extends Controller
             'phone' => 'nullable|string|max:20',
             'jabatan' => 'nullable|string|max:100',
             'role' => 'required|in:admin,pejabat,staff,satpam',
-            'pejabat_id' => 'nullable|exists:users,id|required_if:role,staff',
+            'pejabat_id' => 'required_if:role,staff|nullable|exists:users,id',
             'password' => ['required', Rules\Password::defaults()],
         ]);
 
@@ -65,7 +65,7 @@ class UserController extends Controller
             'phone' => 'nullable|string|max:20',
             'jabatan' => 'nullable|string|max:100',
             'role' => 'required|in:admin,pejabat,staff,satpam',
-            'pejabat_id' => 'nullable|exists:users,id|required_if:role,staff',
+            'pejabat_id' => 'required_if:role,staff|nullable|exists:users,id',
             'password' => ['nullable', Rules\Password::defaults()],
         ]);
 

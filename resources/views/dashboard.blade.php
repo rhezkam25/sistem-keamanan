@@ -136,7 +136,7 @@
                                     </span>
                                 </td>
                                 <td class="px-4 py-3 text-gray-500">{{ $k->waktu_scan->format('H:i') }}</td>
-                                <td class="px-4 py-3 text-gray-500">{{ $k->petugas->name }}</td>
+                                <td class="px-4 py-3 text-gray-500">{{ $k->petugas?->name ?? 'N/A' }}</td>
                             </tr>
                             @endforeach
                         </tbody>

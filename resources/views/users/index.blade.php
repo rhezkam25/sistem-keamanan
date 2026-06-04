@@ -132,7 +132,7 @@
                             </button>
                             <button type="button"
                                 @click="document.getElementById(targetForm).submit()"
-                                class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-red-500 rounded-lg hover:bg-red-500 transition">
+                                class="px-5 py-2.5 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition">
                                 Ya
                             </button>
                         </div>

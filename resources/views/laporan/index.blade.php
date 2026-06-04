@@ -57,8 +57,8 @@
                                 <td class="px-4 py-3 font-medium text-gray-800">{{ $t->nama }}</td>
                                 <td class="px-4 py-3 text-gray-500">{{ $t->nomor_id }}</td>
                                 <td class="px-4 py-3 text-gray-500">{{ Str::limit($t->tujuan_kunjungan, 30) }}</td>
-                                <td class="px-4 py-3 text-gray-500">{{ $t->pendaftar->name }}</td>
-                                <td class="px-4 py-3 text-gray-500">{{ $t->pejabat->name }}</td>
+                                <td class="px-4 py-3 text-gray-500">{{ $t->pendaftar?->name ?? 'N/A' }}</td>
+                                <td class="px-4 py-3 text-gray-500">{{ $t->pejabat?->name ?? 'N/A' }}</td>
                                 <td class="px-4 py-3">
                                     <span class="px-2 py-0.5 rounded-full text-xs font-semibold
                                         @if($t->status === 'menunggu') bg-yellow-100 text-yellow-800
@@ -68,10 +68,10 @@
                                     </span>
                                 </td>
                                 <td class="px-4 py-3 text-gray-500 text-xs">
-                                    {{ $t->kunjungan->where('jenis', 'masuk')->first()?->waktu_scan?->format('d/m H:i') ?? '-' }}
+                                    {{ $t->kunjunganMasuk?->waktu_scan?->format('d/m H:i') ?? '-' }}
                                 </td>
                                 <td class="px-4 py-3 text-gray-500 text-xs">
-                                    {{ $t->kunjungan->where('jenis', 'keluar')->first()?->waktu_scan?->format('d/m H:i') ?? '-' }}
+                                    {{ $t->kunjunganKeluar?->waktu_scan?->format('d/m H:i') ?? '-' }}
                                 </td>
                                 <td class="px-4 py-3 text-gray-500">{{ $t->created_at->format('d/m/Y') }}</td>
                             </tr>

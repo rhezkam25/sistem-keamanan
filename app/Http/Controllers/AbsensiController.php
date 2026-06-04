@@ -153,11 +153,15 @@ class AbsensiController extends Controller
         $bulan = $request->integer('bulan', now()->month);
         $tahun = $request->integer('tahun', now()->year);
 
+        $bulan = max(1, min(12, $bulan));
+        $tahun = max(2000, min(now()->year + 1, $tahun));
+
         $absensi = Absensi::where('user_id', $user->id)
             ->whereYear('tanggal', $tahun)
             ->whereMonth('tanggal', $bulan)
             ->orderByDesc('tanggal')
-            ->paginate(20);
+            ->paginate(20)
+            ->withQueryString();
 
         return view('absensi.riwayat', compact('absensi', 'bulan', 'tahun'));
     }

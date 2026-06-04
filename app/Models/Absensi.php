@@ -30,9 +30,16 @@ class Absensi extends Model
     protected function casts(): array
     {
         return [
-            'tanggal'      => 'date',
-            'waktu_masuk'  => 'datetime',
-            'waktu_keluar' => 'datetime',
+            'tanggal'          => 'date',
+            'waktu_masuk'      => 'datetime',
+            'waktu_keluar'     => 'datetime',
+            'latitude_masuk'   => 'float',
+            'longitude_masuk'  => 'float',
+            'latitude_keluar'  => 'float',
+            'longitude_keluar' => 'float',
+            'akurasi_masuk'    => 'float',
+            'akurasi_keluar'   => 'float',
+            'durasi_menit'     => 'integer',
         ];
     }
 
