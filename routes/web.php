@@ -22,6 +22,11 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Proxy foto absensi — semua user ter-auth bisa akses
+    Route::get('/foto/{path}', [AbsensiController::class, 'servePhoto'])
+        ->where('path', '.+')
+        ->name('foto.serve');
+
     // Tamu — bisa diakses Admin, Pejabat, Staff
     Route::middleware('role:admin,pejabat,staff')->group(function () {
         Route::resource('tamu', TamuController::class);

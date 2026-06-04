@@ -176,6 +176,19 @@ class AbsensiController extends Controller
         return round($R * 2 * atan2(sqrt($a), sqrt(1 - $a)));
     }
 
+    public function servePhoto(Request $request, string $path): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        if (str_contains($path, '..') || !str_starts_with($path, 'absensi/')) {
+            abort(403);
+        }
+
+        if (!Storage::exists($path)) {
+            abort(404);
+        }
+
+        return Storage::response($path, null, ['Cache-Control' => 'private, max-age=3600']);
+    }
+
     private function simpanFotoBase64(string $base64, string $folder): ?string
     {
         $allowed = ['jpeg', 'jpg', 'png', 'gif', 'webp'];

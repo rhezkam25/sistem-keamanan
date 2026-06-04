@@ -136,12 +136,12 @@
                                 </td>
                                 <td class="px-4 py-3 whitespace-nowrap">
                                     @if($a->foto_masuk)
-                                        <a href="{{ Storage::url($a->foto_masuk) }}" target="_blank"
+                                        <a href="{{ url('/foto/' . $a->foto_masuk) }}" target="_blank"
                                            class="text-xs text-blue-500 hover:underline">Masuk</a>
                                     @endif
                                     @if($a->foto_keluar)
                                         @if($a->foto_masuk) <span class="text-gray-300"> | </span> @endif
-                                        <a href="{{ Storage::url($a->foto_keluar) }}" target="_blank"
+                                        <a href="{{ url('/foto/' . $a->foto_keluar) }}" target="_blank"
                                            class="text-xs text-blue-500 hover:underline">Keluar</a>
                                     @endif
                                     @if(!$a->foto_masuk && !$a->foto_keluar) - @endif
