@@ -21,8 +21,8 @@
                         <p class="font-semibold text-gray-800">{{ $user->name }}</p>
                     </div>
                     <div>
-                        <p class="text-xs text-gray-500">NIP</p>
-                        <p class="font-semibold text-gray-800">{{ $user->nip ?? '-' }}</p>
+                        <p class="text-xs text-gray-500">Username</p>
+                        <p class="font-semibold text-gray-800">{{ $user->username ?? '-' }}</p>
                     </div>
                     <div>
                         <p class="text-xs text-gray-500">Jabatan</p>

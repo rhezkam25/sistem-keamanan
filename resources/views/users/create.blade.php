@@ -19,9 +19,9 @@
                             <x-input-error :messages="$errors->get('name')" class="mt-1" />
                         </div>
                         <div>
-                            <x-input-label for="nip" value="NIP" />
-                            <x-text-input id="nip" name="nip" type="text" class="mt-1 block w-full" :value="old('nip')" />
-                            <x-input-error :messages="$errors->get('nip')" class="mt-1" />
+                            <x-input-label for="username" value="Username" />
+                            <x-text-input id="username" name="username" type="text" class="mt-1 block w-full" :value="old('username')" />
+                            <x-input-error :messages="$errors->get('username')" class="mt-1" />
                         </div>
                         <div>
                             <x-input-label for="email" value="Email *" />

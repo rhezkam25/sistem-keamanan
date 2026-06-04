@@ -8,6 +8,7 @@ use App\Http\Controllers\PengaturanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScanController;
 use App\Http\Controllers\TamuController;
+use App\Http\Controllers\PasswordRequestController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -63,6 +64,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Manajemen User — hanya Admin
     Route::middleware('role:admin')->group(function () {
+        Route::get('/admin/password-requests', [PasswordRequestController::class, 'index'])->name('password-requests.index');
+        Route::patch('/admin/password-requests/{request}/selesai', [PasswordRequestController::class, 'selesai'])->name('password-requests.selesai');
+
         Route::resource('users', UserController::class);
         Route::patch('/users/{user}/toggle-active', [UserController::class, 'toggleActive'])->name('users.toggleActive');
         Route::patch('/users/{user}/toggle-absensi-access', [UserController::class, 'toggleAbsensiAccess'])->name('users.toggleAbsensiAccess');

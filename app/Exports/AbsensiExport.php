@@ -33,7 +33,7 @@ class AbsensiExport implements FromQuery, WithHeadings, WithMapping, WithStyles,
     {
         return [
             'Nama',
-            'NIP',
+            'Username',
             'Tanggal',
             'Jam Masuk',
             'Jam Keluar',
@@ -52,7 +52,7 @@ class AbsensiExport implements FromQuery, WithHeadings, WithMapping, WithStyles,
     {
         return [
             $row->user?->name ?? '-',
-            $row->user?->nip  ?? '-',
+            $row->user?->username ?? '-',
             $row->tanggal?->format('d/m/Y') ?? '-',
             $row->waktu_masuk  ? $row->waktu_masuk->format('H:i:s')  : '-',
             $row->waktu_keluar ? $row->waktu_keluar->format('H:i:s') : '-',

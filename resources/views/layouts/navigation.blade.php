@@ -55,6 +55,13 @@
                     <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
                         Manajemen User
                     </x-nav-link>
+                    <x-nav-link :href="route('password-requests.index')" :active="request()->routeIs('password-requests.*')">
+                        Reset Password
+                        @php $pendingReset = \App\Models\PasswordResetRequest::where('status','pending')->count() @endphp
+                        @if($pendingReset > 0)
+                            <span class="ml-1 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5">{{ $pendingReset }}</span>
+                        @endif
+                    </x-nav-link>
                     <x-nav-link :href="route('laporan.index')" :active="request()->routeIs('laporan.*')">
                         Laporan
                     </x-nav-link>
@@ -130,6 +137,7 @@
             @endif
             @if(Auth::user()->isAdmin())
             <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">Manajemen User</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('password-requests.index')" :active="request()->routeIs('password-requests.*')">Reset Password</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('laporan.index')" :active="request()->routeIs('laporan.*')">Laporan</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('pengaturan.index')" :active="request()->routeIs('pengaturan.*')">Pengaturan</x-responsive-nav-link>
             @endif

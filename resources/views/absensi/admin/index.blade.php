@@ -86,7 +86,7 @@
                             <tr class="hover:bg-gray-50">
                                 <td class="px-4 py-3">
                                     <p class="font-medium text-gray-800">{{ $a->user->name }}</p>
-                                    <p class="text-xs text-gray-500">{{ $a->user->nip }}</p>
+                                    <p class="text-xs text-gray-500">{{ $a->user->username }}</p>
                                 </td>
                                 <td class="px-4 py-3">{{ $a->tanggal->translatedFormat('d M Y') }}</td>
                                 <td class="px-4 py-3">

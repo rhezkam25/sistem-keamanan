@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
     {
         $admin = User::create([
             'name' => 'Administrator',
-            'nip' => 'ADM001',
+            'username' => 'ADM001',
             'email' => 'admin@kantor.com',
             'phone' => '08100000001',
             'jabatan' => 'Administrator Sistem',
@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
 
         $pejabat = User::create([
             'name' => 'Budi Santoso',
-            'nip' => 'PJB001',
+            'username' => 'PJB001',
             'email' => 'pejabat@kantor.com',
             'phone' => '08100000002',
             'jabatan' => 'Kepala Divisi IT',
@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
 
         $staff = User::create([
             'name' => 'Siti Rahayu',
-            'nip' => 'STF001',
+            'username' => 'STF001',
             'email' => 'staff@kantor.com',
             'phone' => '08100000003',
             'jabatan' => 'Staff Administrasi',
@@ -43,7 +43,7 @@ class DatabaseSeeder extends Seeder
 
         User::create([
             'name' => 'Andi Kurniawan',
-            'nip' => 'SAT001',
+            'username' => 'SAT001',
             'email' => 'satpam@kantor.com',
             'phone' => '08100000004',
             'jabatan' => 'Petugas Keamanan',

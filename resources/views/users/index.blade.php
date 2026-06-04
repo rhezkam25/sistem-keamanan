@@ -15,7 +15,7 @@
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-4 py-3 text-left text-gray-600 font-medium">Nama</th>
-                                <th class="px-4 py-3 text-left text-gray-600 font-medium">NIP</th>
+                                <th class="px-4 py-3 text-left text-gray-600 font-medium">Username</th>
                                 <th class="px-4 py-3 text-left text-gray-600 font-medium">Email</th>
                                 <th class="px-4 py-3 text-left text-gray-600 font-medium">Jabatan</th>
                                 <th class="px-4 py-3 text-left text-gray-600 font-medium">Role</th>
@@ -29,7 +29,7 @@
                             @foreach($users as $u)
                             <tr class="hover:bg-gray-50 {{ !$u->is_active ? 'bg-gray-50 opacity-75' : '' }}">
                                 <td class="px-4 py-3 font-medium text-gray-800">{{ $u->name }}</td>
-                                <td class="px-4 py-3 text-gray-500">{{ $u->nip ?? '-' }}</td>
+                                <td class="px-4 py-3 text-gray-500">{{ $u->username ?? '-' }}</td>
                                 <td class="px-4 py-3 text-gray-500">{{ $u->email }}</td>
                                 <td class="px-4 py-3 text-gray-500">{{ $u->jabatan ?? '-' }}</td>
                                 <td class="px-4 py-3">
