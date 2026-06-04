@@ -8,12 +8,14 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('password_reset_requests', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->enum('status', ['pending', 'selesai'])->default('pending');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('password_reset_requests')) {
+            Schema::create('password_reset_requests', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+                $table->enum('status', ['pending', 'selesai'])->default('pending');
+                $table->timestamps();
+            });
+        }
     }
 
     public function down(): void

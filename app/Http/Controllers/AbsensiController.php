@@ -176,17 +176,20 @@ class AbsensiController extends Controller
         return round($R * 2 * atan2(sqrt($a), sqrt(1 - $a)));
     }
 
-    public function servePhoto(Request $request, string $path): \Symfony\Component\HttpFoundation\StreamedResponse
+    public function servePhoto(Request $request, string $path): mixed
     {
         if (str_contains($path, '..') || !str_starts_with($path, 'absensi/')) {
             abort(403);
         }
 
-        if (!Storage::exists($path)) {
+        try {
+            if (!Storage::exists($path)) {
+                abort(404);
+            }
+            return Storage::response($path, null, ['Cache-Control' => 'private, max-age=3600']);
+        } catch (\Throwable $e) {
             abort(404);
         }
-
-        return Storage::response($path, null, ['Cache-Control' => 'private, max-age=3600']);
     }
 
     private function simpanFotoBase64(string $base64, string $folder): ?string
@@ -207,8 +210,13 @@ class AbsensiController extends Controller
             return null;
         }
 
-        // Validate actual image content via magic bytes
-        if (@getimagesizefromstring($data) === false) {
+        try {
+            $finfo = new \finfo(FILEINFO_MIME_TYPE);
+            $mime  = $finfo->buffer($data);
+            if (!$mime || !str_starts_with($mime, 'image/')) {
+                return null;
+            }
+        } catch (\Throwable $e) {
             return null;
         }
 
