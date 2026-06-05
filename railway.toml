@@ -1,5 +1,2 @@
-[build]
-buildCommand = "npm ci && npm run build"
-
 [deploy]
 releaseCommand = "php artisan migrate --force && php artisan view:clear && php artisan config:clear && php artisan cache:clear"
