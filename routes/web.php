@@ -41,10 +41,15 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/approval/{tamu}/tolak', [ApprovalController::class, 'tolak'])->name('approval.tolak');
     });
 
-    // Scan QR — hanya Admin & Satpam
-    Route::middleware('role:admin,satpam')->group(function () {
+    // Scan QR — Admin, Pejabat, Satpam
+    Route::middleware('role:admin,pejabat,satpam')->group(function () {
         Route::get('/scan', [ScanController::class, 'index'])->name('scan.index');
-        Route::post('/scan', [ScanController::class, 'proses'])->name('scan.proses');
+        Route::post('/scan', [ScanController::class, 'proses'])
+            ->middleware('throttle:30,1')
+            ->name('scan.proses');
+        Route::post('/scan/checkout/{tamu}', [ScanController::class, 'manualCheckout'])
+            ->middleware('throttle:20,1')
+            ->name('scan.manual-checkout');
     });
 
     // Absensi — Satpam & Admin
