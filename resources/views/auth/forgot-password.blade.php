@@ -14,7 +14,10 @@
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
+        <div class="flex items-center justify-between mt-4">
+            <a href="{{ route('login') }}" class="text-sm text-gray-500 hover:text-gray-700 underline">
+                &larr; Kembali ke Login
+            </a>
             <x-primary-button>
                 Kirim Permintaan ke Admin
             </x-primary-button>
