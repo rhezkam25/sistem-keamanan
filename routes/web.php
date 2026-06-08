@@ -28,8 +28,8 @@ Route::middleware(['auth'])->group(function () {
         ->where('path', '.+')
         ->name('foto.serve');
 
-    // Tamu — bisa diakses Admin, Pejabat, Staff
-    Route::middleware('role:admin,pejabat,staff')->group(function () {
+    // Tamu — Admin/Pejabat/Staff bisa CRUD; Satpam hanya index & show (dibatasi di controller)
+    Route::middleware('role:admin,pejabat,staff,satpam')->group(function () {
         Route::resource('tamu', TamuController::class);
         Route::get('/tamu/{tamu}/qr', [TamuController::class, 'showQr'])->name('tamu.qr');
     });

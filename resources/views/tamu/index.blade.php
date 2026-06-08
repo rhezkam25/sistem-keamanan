@@ -73,9 +73,10 @@
                     <div>
                         <label class="block text-xs text-gray-500 mb-1">Tampilkan</label>
                         <select name="per_page" class="border border-gray-300 rounded-lg px-6 py-2 text-sm" onchange="this.form.submit()">
-                            <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10</option>
-                            <option value="20" {{ $perPage == 20 ? 'selected' : '' }}>20</option>
-                            <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50</option>
+                            <option value="10"  {{ $perPage == 10  ? 'selected' : '' }}>10</option>
+                            <option value="20"  {{ $perPage == 20  ? 'selected' : '' }}>20</option>
+                            <option value="50"  {{ $perPage == 50  ? 'selected' : '' }}>50</option>
+                            <option value="100" {{ $perPage == 100 ? 'selected' : '' }}>100</option>
                         </select>
                     </div>
 
@@ -167,11 +168,13 @@
                                     </a>
                                 </th>
                                 <th class="px-4 py-3 text-left font-medium text-gray-600">Tujuan</th>
+                                @if(!Auth::user()->isSatpam())
                                 <th class="px-4 py-3 text-left font-medium text-gray-600">
                                     <a href="{{ $sortUrl('pejabat') }}" class="inline-flex items-center gap-1 hover:text-blue-600">
                                         Pejabat {!! $sortIcon('pejabat') !!}
                                     </a>
                                 </th>
+                                @endif
                                 <th class="px-4 py-3 text-left font-medium text-gray-600">Status</th>
                                 <th class="px-4 py-3 text-left font-medium text-gray-600">
                                     <a href="{{ $sortUrl('created_at') }}" class="inline-flex items-center gap-1 hover:text-blue-600">
@@ -187,7 +190,9 @@
                                 <td class="px-4 py-3 font-medium text-gray-800">{{ $t->nama }}</td>
                                 <td class="px-4 py-3 text-gray-500">{{ $t->nomor_id }}</td>
                                 <td class="px-4 py-3 text-gray-500">{{ Str::limit($t->tujuan_kunjungan, 35) }}</td>
+                                @if(!Auth::user()->isSatpam())
                                 <td class="px-4 py-3 text-gray-500">{{ $t->pejabat?->name ?? 'N/A' }}</td>
+                                @endif
                                 <td class="px-4 py-3">
                                     @if($t->status === 'menunggu')
                                         <span class="px-2 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">Menunggu</span>
@@ -201,10 +206,10 @@
                                 <td class="px-4 py-3">
                                     <div class="flex gap-2">
                                         <a href="{{ route('tamu.show', $t) }}" class="text-blue-600 hover:underline text-xs">Detail</a>
-                                        @if($t->disetujui())
+                                        @if($t->disetujui() && !Auth::user()->isSatpam())
                                         <a href="{{ route('tamu.qr', $t) }}" class="text-green-600 hover:underline text-xs">QR Code</a>
                                         @endif
-                                        @if($t->menunggu())
+                                        @if($t->menunggu() && !Auth::user()->isSatpam())
                                         <a href="{{ route('tamu.edit', $t) }}" class="text-yellow-600 hover:underline text-xs">Edit</a>
                                         @endif
                                     </div>

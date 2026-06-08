@@ -23,6 +23,8 @@ class TamuController extends Controller
                 $q->where('tamu.pejabat_id', $user->id)
                   ->orWhere('tamu.didaftarkan_oleh', $user->id);
             });
+        } elseif ($user->isSatpam()) {
+            // satpam lihat semua tamu tanpa filter kepemilikan
         }
 
         if ($search = request('search')) {
@@ -57,7 +59,7 @@ class TamuController extends Controller
 
         $sort      = in_array(request('sort'), ['nama', 'nomor_id', 'created_at', 'pejabat']) ? request('sort') : 'created_at';
         $direction = request('direction') === 'asc' ? 'asc' : 'desc';
-        $perPage   = in_array((int) request('per_page'), [10, 20, 50]) ? (int) request('per_page') : 20;
+        $perPage   = in_array((int) request('per_page'), [10, 20, 50, 100]) ? (int) request('per_page') : 20;
 
         if ($sort === 'pejabat') {
             $query->join('users as pejabat_user', 'tamu.pejabat_id', '=', 'pejabat_user.id')
@@ -73,6 +75,7 @@ class TamuController extends Controller
 
     public function create()
     {
+        if (Auth::user()->isSatpam()) abort(403);
         $user = Auth::user();
         $pejabatList = collect();
 
@@ -89,6 +92,7 @@ class TamuController extends Controller
 
     public function store(Request $request)
     {
+        if (Auth::user()->isSatpam()) abort(403);
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'nomor_id' => 'required|string|max:50',
@@ -121,6 +125,7 @@ class TamuController extends Controller
 
     public function edit(Tamu $tamu)
     {
+        if (Auth::user()->isSatpam()) abort(403);
         $this->authorizeView($tamu);
 
         if ($tamu->status !== 'menunggu') {
@@ -138,6 +143,7 @@ class TamuController extends Controller
 
     public function update(Request $request, Tamu $tamu)
     {
+        if (Auth::user()->isSatpam()) abort(403);
         $this->authorizeView($tamu);
 
         if ($tamu->status !== 'menunggu') {
@@ -163,6 +169,7 @@ class TamuController extends Controller
 
     public function destroy(Tamu $tamu)
     {
+        if (Auth::user()->isSatpam()) abort(403);
         $this->authorizeView($tamu);
 
         if ($tamu->status === 'disetujui') {
@@ -178,6 +185,7 @@ class TamuController extends Controller
 
     public function showQr(Tamu $tamu)
     {
+        if (Auth::user()->isSatpam()) abort(403);
         $this->authorizeView($tamu);
 
         if (!$tamu->disetujui() || !$tamu->qr_token) {
@@ -195,6 +203,8 @@ class TamuController extends Controller
         $user = Auth::user();
 
         if ($user->isAdmin()) return;
+
+        if ($user->isSatpam()) return;
 
         if ($user->isPejabat() && $tamu->pejabat_id === $user->id) return;
 

@@ -6,10 +6,10 @@
                 <h2 class="font-semibold text-xl text-gray-800">Detail Tamu: {{ $tamu->nama }}</h2>
             </div>
             <div class="flex gap-2">
-                @if($tamu->disetujui())
+                @if($tamu->disetujui() && !Auth::user()->isSatpam())
                 <a href="{{ route('tamu.qr', $tamu) }}" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium">Lihat QR Code</a>
                 @endif
-                @if($tamu->menunggu())
+                @if($tamu->menunggu() && !Auth::user()->isSatpam())
                 <a href="{{ route('tamu.edit', $tamu) }}" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 text-sm font-medium">Edit</a>
                 @endif
             </div>

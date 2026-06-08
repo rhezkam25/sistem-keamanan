@@ -17,7 +17,7 @@
                         Dashboard
                     </x-nav-link>
 
-                    @if(Auth::user()->canInputTamu())
+                    @if(Auth::user()->canInputTamu() || Auth::user()->isSatpam())
                     <x-nav-link :href="route('tamu.index')" :active="request()->routeIs('tamu.*')">
                         Data Tamu
                     </x-nav-link>
@@ -119,7 +119,7 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">Dashboard</x-responsive-nav-link>
-            @if(Auth::user()->canInputTamu())
+            @if(Auth::user()->canInputTamu() || Auth::user()->isSatpam())
             <x-responsive-nav-link :href="route('tamu.index')" :active="request()->routeIs('tamu.*')">Data Tamu</x-responsive-nav-link>
             @endif
             @if(Auth::user()->canApprove())
